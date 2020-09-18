@@ -34,7 +34,8 @@ gem 'simple_form'
 gem 'rubocop-rails', require: false
 gem 'brakeman'
 
-group :development, :test do  gem 'pry-byebug'
+group :development, :test do
+  gem 'pry-byebug'
   gem 'pry-rails'
   gem 'dotenv-rails'
   gem 'rspec-rails'
