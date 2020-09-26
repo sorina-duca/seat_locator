@@ -2,6 +2,7 @@ class InterfacesController < ApplicationController
 
 
 
+
   private
 
 # create a hash mapping the row letter to the row number
@@ -76,9 +77,12 @@ end
 def best_group_seats(available_seats, rows, people)
   seat_groups = []
   available_seats
-    .group_by { |seat| seat_letter(seat)}
-    .sort_by { |array| array.map { |seat| seat_column(seat)} }
-    .map { |array| select_consecutive(array) }
+    .group_by { |seat| seat_letter(seat) }  # group by row (e.g. A, B)
+    .map { |k, v| v } # get values on each row
+    .map {|arr| arr.sort_by { |seat| seat_column(seat) } } #sort asc by seat column
+    .map { |array| select_consecutive(array).flatten } #get only the consecutive seats
+    .select {|arr| arr.length >= people } # select the groups of seats that could accomodate the no. of people
+
 
 end
 end
