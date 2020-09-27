@@ -1,9 +1,7 @@
 class InterfacesController < ApplicationController
 
-
-
-
   private
+
 
 # create a hash mapping the row letter to the row number
 def get_correspondence(rows)
@@ -16,7 +14,7 @@ end
 
 # added 0.5 if no. of rows is even because there are 2 identical best rows
 def get_center_point(rows)
-  rows.even? ? rows.fdiv(2) + 0.5 : rows.fdiv(2)
+  rows % 2 == 0 ? rows.fdiv(2) + 0.5 : rows.fdiv(2)
 end
 
 def seat_letter(seat)
@@ -37,6 +35,7 @@ end
 def y_dist(seat, rows)
   letter = seat_letter(seat)
   # subtracting one because when you are on row A(first), the y distance is 0
+  puts get_correspondence(rows)[letter]
   get_correspondence(rows)[letter] - 1
 end
 
@@ -65,6 +64,7 @@ def score(seat, rows)
   end
 end
 
+# calculate best seat
 def best_seat(available_seats, rows)
   # get the pairs of seat and seat score
   seat_dist_pairs = {}
@@ -74,6 +74,8 @@ def best_seat(available_seats, rows)
   seat_dist_pairs.min_by { |v| v }[0]
 end
 
+
+# calculate best groups of seats - fallback nil
 def best_group_seats(available_seats, rows, people)
   seat_groups = []
   available_seats
@@ -82,7 +84,32 @@ def best_group_seats(available_seats, rows, people)
     .map {|arr| arr.sort_by { |seat| seat_column(seat) } } #sort asc by seat column
     .map { |array| select_consecutive(array).flatten } #get only the consecutive seats
     .select {|arr| arr.length >= people } # select the groups of seats that could accomodate the no. of people
+    .map { |arr| arr.length > people ? get_groups_of_seats(arr, people).flatten : arr }
+    .sort_by { |arr| score_array(arr, rows)}
+    .first
+
+end
+
+  def get_groups_of_seats(arr, people)
+    arrays = []
+    for i in 0..people - 1 do
+      arrays << arr[i..i+people-1]
+      i += 1
+    end
+    arrays
+  end
+
+  def score_array(array, rows)
+    array.map {|seat| score(seat, rows)}
+         .sum
+  end
+
+
+# ['A1', 'B5', 'B2', 'C7', 'C9']
+# ['A1', 'B5', 'B2', 'C7', 'C9', 'b8', 'a3', 'a2', 'b6']
 
 
 end
-end
+
+#  pry(main)> [["A1", "A2", "A5"], ["B5", "B2"], ["C7", "C8","C9"]].map { |array| select_consecutive(array).flatten }.select {|arr| arr.length >= 3 }
+# => [["C7", "C8", "C9"]]
