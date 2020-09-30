@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
     available_seats.each do |seat|
       seat_dist_pairs[seat] = score(seat, rows)
     end
-    seat_dist_pairs.min_by { |v| v }[0]
+    seat_dist_pairs.key(seat_dist_pairs.values.min)
   end
 
   # calculate best groups of seats - fallback nil
