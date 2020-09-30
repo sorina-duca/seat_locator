@@ -1,0 +1,13 @@
+
+<div class="search-bar-index mt-3 d-flex justify-content-center" >
+    <%= form_tag get_best_seat_path, method: :get do %>
+      <span class="input" style="position: relative;left: 15px;">
+        <%= text_area_tag :venue, params[:venue], class: "form-control d-inline w-auto border-radius-search", placeholder: "Venue data"  %>
+      </span>
+      <span class="input" id='capacity' style="position: relative;left: 10px;">
+        <%= number_field_tag :people, params[:date], class: "form-control d-inline w-auto border-radius-search", placeholder: "number of people" %>
+      </span >
+      <span class="input" style="position: relative;left: -5px; bottom: 1px;"><%= submit_tag "Get best seats!", class: "btn btn-primary border-radius-search-btn" %>
+      </span>
+    <% end %>
+</div>
